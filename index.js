@@ -130,66 +130,118 @@ function getNewSummaries(cars) {
 
 class Car {
   constructor(name, model, price, sold, mileage) {
-    this.name=name
-    this.model=model
-    this.price=price
-    this.sold=sold
-    this.mileage=mileage
+    this.name = name;
+    this.model = model;
+    this.price = price;
+    this.sold = sold;
+    this.mileage = mileage;
   }
 
   summary() {
     return `${this.name} (${this.model}) - $${this.price} - mileage
-    ${this.mileage} - ${this.sold ? "sold" :
-    "available"}`;
+    ${this.mileage} - ${this.sold ? "sold" : "available"}`;
   }
-  
-  set markSold(state){
-    if(this.sold==true && state==true) throw new Error("Car sold already")
-    this.sold = state
+
+  set markSold(state) {
+    if (this.sold == true && state == true) throw new Error("Car sold already");
+    this.sold = state;
   }
-  
 }
 
-class CarLot{
-  constructor(cars){
-if (!Array.isArray(cars)) {
-    throw new Error("Invalid argument type");
+class CarLot {
+  constructor(cars) {
+    if (!Array.isArray(cars)) {
+      throw new Error("Invalid argument type");
     }
-    this.cars=cars
+    this.cars = cars;
   }
-  unSoldCars(){
-    return this.cars.filter(car => car.sold === false)
+  unSoldCars() {
+    return this.cars.filter((car) => car.sold === false);
   }
-  addCar(data){
-    if(!data || typeof data !== "object" || data === null) throw new Error("invalid data")
-    const validKeys = ["name", "model", "price", "sold", "mileage"];
-    for(const key in data){
-      if(!validKeys.includes(key)){
-        throw new Error("Invalid key property")
-      }
-    }
-    return this.cars.push(data)
+  addCar(data) {
+    if (!(data instanceof Car)) throw new Error("Must be a Car Instance");
+    return this.cars.push(data);
   }
-  
-  mostExpensiveCar(){
+
+  mostExpensiveCar() {
     return this.cars.reduce((mostExpensive, currentCar) => {
-    return currentCar.price > mostExpensive.price ? currentCar : mostExpensive;
-  });
+      return currentCar.price > mostExpensive.price
+        ? currentCar
+        : mostExpensive;
+    });
   }
-  totalValueOfUnsoldCars(){
+  totalValueOfUnsoldCars() {
     return this.cars
-    .filter(car => car.sold === false)
-    .reduce((total, car) => total + car.price, 0)
+      .filter((car) => car.sold === false)
+      .reduce((total, car) => total + car.price, 0);
+  }
+
+  static cheaperCar(car1, car2){
+    if (!(car1 instanceof Car) || !(car2 instanceof Car)) {
+      throw new Error("Must be Instance of Car");
+    }
+    if (car1.price < car2.price) {
+      return car1
+    }else {
+      return car2
+    }
+  }
 }
+
+// const car = new Car("BMW", 2000, 20000, false, 100);
+// console.log(car.summary());
+// const newCar = new CarLot(cars);
+// console.log(
+//   newCar.addCar(new Car("Toyota", "1888", 20000, false, 100)),
+// );
+// console.log(newCar.mostExpensiveCar());
+
+// console.log(newCar.totalValueOfUnsoldCars());
+// const car1 = new Car("Toyota", "1888", 20000, false, 100);
+// const car2 = new Car("Toyota", "1888", 10000, false, 100);
+// console.log(CarLot.cheaperCar(car1, car2));
+
+function linearSearch(cars, name){
+  for (const car of cars) {
+    if (car.name === name) {
+      return car
+    }
+  }
+  return null
 }
 
-const car = new Car("BMW", 2000, 20000, false, 100)
-console.log(car.summary())
-const newCar = new CarLot(cars)
-console.log(newCar.addCar({name: "Toyota", model: "1888", price: 20000, sold:
-false, mileage: 100}))
+console.log(linearSearch(cars, 'Benz'))
 
-const expensive = new CarLot(cars)
-console.log(expensive.mostExpensiveCar())
 
-console.log(expensive.totalValueOfUnsoldCars())
+
+function bubbleSort(cars){
+  for (let i = 0; i < cars.length; i++) {
+    for (let j = 0; j < cars.length - i - 1; j++) {
+      if (cars[j].price > cars[j + 1].price) {
+        [cars[j], cars[j + 1]] = [cars[j + 1], cars[j]]
+      }
+
+    }
+  }
+  return cars
+}
+
+console.log(bubbleSort(cars))
+
+function binarySearch(cars, price) {
+  let left = 0
+  let right = cars.length - 1
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2)
+    if (price === cars[mid].price) {
+      return cars[mid]
+    }else if(cars[mid].price < price){
+      left = mid + 1
+    }else {
+      right = mid - 1
+    }
+  }
+  return null
+}
+
+console.log(binarySearch((bubbleSort(cars)), 200));
