@@ -2,7 +2,7 @@ const cars = [
   {
     name: "BMW",
     model: 2002,
-    price: 3000,
+    price: 30000000,
     sold: false,
     mileage: 50,
   },
@@ -108,18 +108,88 @@ function getNewSummaries(cars) {
   return cars.map((car) => ({ ...car, summary: getCarSummary(car) }));
 }
 
-try {
-  console.log(getCarSummary(cars[0]));
-  console.log(getMostExpensive(cars));
-  console.log(getUnsoldCars(cars[0]));
-  console.log(getTotalUnsoldCars(cars));
-  console.log(getNewSummaries(cars));
-} catch (error) {
-  console.log("Something went wrong: " + error.message);
+// try {
+//   console.log(getCarSummary(cars[0]));
+//   console.log(getMostExpensive(cars));
+//   console.log(getUnsoldCars(cars));
+//   console.log(getTotalUnsoldCars(cars));
+//   console.log(getNewSummaries(cars));
+// } catch (error) {
+//   console.log("Something went wrong: " + error.message);
+// }
+
+// try {
+//   console.log(getCarSummary("i am not an object"));
+// } catch (error) {
+//   console.log("Caught: " + error.message);
+// }
+
+// A CarLot class that holds a collection of cars and has methods to: add a car,
+// get all unsold cars, get the most expensive car, and get the total value of
+// unsold cars
+
+class Car {
+  constructor(name, model, price, sold, mileage) {
+    this.name=name
+    this.model=model
+    this.price=price
+    this.sold=sold
+    this.mileage=mileage
+  }
+
+  summary() {
+    return `${this.name} (${this.model}) - $${this.price} - mileage
+    ${this.mileage} - ${this.sold ? "sold" :
+    "available"}`;
+  }
+  
+  set markSold(state){
+    if(this.sold==true && state==true) throw new Error("Car sold already")
+    this.sold = state
+  }
+  
 }
 
-try {
-  console.log(getCarSummary("i am not an object"));
-} catch (error) {
-  console.log("Caught: " + error.message);
+class CarLot{
+  constructor(cars){
+if (!Array.isArray(cars)) {
+    throw new Error("Invalid argument type");
+    }
+    this.cars=cars
+  }
+  unSoldCars(){
+    return this.cars.filter(car => car.sold === false)
+  }
+  addCar(data){
+    if(!data || typeof data !== "object" || data === null) throw new Error("invalid data")
+    const validKeys = ["name", "model", "price", "sold", "mileage"];
+    for(const key in data){
+      if(!validKeys.includes(key)){
+        throw new Error("Invalid key property")
+      }
+    }
+    return this.cars.push(data)
+  }
+  
+  mostExpensiveCar(){
+    return this.cars.reduce((mostExpensive, currentCar) => {
+    return currentCar.price > mostExpensive.price ? currentCar : mostExpensive;
+  });
+  }
+  totalValueOfUnsoldCars(){
+    return this.cars
+    .filter(car => car.sold === false)
+    .reduce((total, car) => total + car.price, 0)
 }
+}
+
+const car = new Car("BMW", 2000, 20000, false, 100)
+console.log(car.summary())
+const newCar = new CarLot(cars)
+console.log(newCar.addCar({name: "Toyota", model: "1888", price: 20000, sold:
+false, mileage: 100}))
+
+const expensive = new CarLot(cars)
+console.log(expensive.mostExpensiveCar())
+
+console.log(expensive.totalValueOfUnsoldCars())
