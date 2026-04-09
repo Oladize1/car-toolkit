@@ -176,17 +176,45 @@ class CarLot {
       .reduce((total, car) => total + car.price, 0);
   }
 
-  static cheaperCar(car1, car2){
+  static cheaperCar(car1, car2) {
     if (!(car1 instanceof Car) || !(car2 instanceof Car)) {
       throw new Error("Must be Instance of Car");
     }
     if (car1.price < car2.price) {
-      return car1
-    }else {
-      return car2
+      return car1;
+    } else {
+      return car2;
     }
   }
 }
+
+const dealershipGroup = {
+  name: "AutoGroup Nigeria",
+  lots: [
+    {
+      name: "Lagos Lot",
+      cars: [
+        new Car("BMW", 2002, 20000, false, 100),
+        new Car("Benz", 2018, 15000, true, 50),
+      ],
+      subLots: [
+        {
+          name: "Lagos Annex",
+          cars: [new Car("Audi", 2020, 25000, false, 30)],
+          subLots: [],
+        },
+      ],
+    },
+    {
+      name: "Abuja Lot",
+      cars: [
+        new Car("Toyota", 2019, 10000, false, 80),
+        new Car("Honda", 2021, 12000, true, 20),
+      ],
+      subLots: [],
+    },
+  ],
+};
 
 // const car = new Car("BMW", 2000, 20000, false, 100);
 // console.log(car.summary());
@@ -201,47 +229,84 @@ class CarLot {
 // const car2 = new Car("Toyota", "1888", 10000, false, 100);
 // console.log(CarLot.cheaperCar(car1, car2));
 
-function linearSearch(cars, name){
+function linearSearch(cars, name) {
   for (const car of cars) {
     if (car.name === name) {
-      return car
+      return car;
     }
   }
-  return null
+  return null;
 }
 
-console.log(linearSearch(cars, 'Benz'))
+// console.log(linearSearch(cars, 'Benz'))
 
-
-
-function bubbleSort(cars){
-  for (let i = 0; i < cars.length; i++) {
-    for (let j = 0; j < cars.length - i - 1; j++) {
-      if (cars[j].price > cars[j + 1].price) {
-        [cars[j], cars[j + 1]] = [cars[j + 1], cars[j]]
+function bubbleSort(cars) {
+  let result = [...cars];
+  for (let i = 0; i < result.length; i++) {
+    for (let j = 0; j < result.length - i - 1; j++) {
+      if (result[j].price > result[j + 1].price) {
+        [result[j], result[j + 1]] = [result[j + 1], result[j]];
       }
-
     }
   }
-  return cars
+  return result;
 }
 
-console.log(bubbleSort(cars))
+// console.log(bubbleSort(cars))
 
 function binarySearch(cars, price) {
-  let left = 0
-  let right = cars.length - 1
+  let left = 0;
+  let right = cars.length - 1;
   while (left <= right) {
-    const mid = Math.floor((left + right) / 2)
+    const mid = Math.floor((left + right) / 2);
     if (price === cars[mid].price) {
-      return cars[mid]
-    }else if(cars[mid].price < price){
-      left = mid + 1
-    }else {
-      right = mid - 1
+      return cars[mid];
+    } else if (cars[mid].price < price) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
     }
   }
+  return null;
+}
+
+// console.log(binarySearch((bubbleSort(cars)), 200));
+
+function recursiveTotalPrice(n) {
+  if (n <= 0) return 0;
+  if (n > cars.length) return null;
+
+  return cars[n - 1].price + recursiveTotalPrice(n - 1);
+}
+
+console.log(recursiveTotalPrice(2));
+
+function searchDealership(lot, carName) {
+  // step 1: search cars in this lot
+  // hint: use .find() on lot.cars
+  const Car = lot.cars.find(car => car.name === carName);
+  // if found, return it
+  if (Car) return Car;
+  // step 2: if not found, loop through lot.subLots
+  // call searchDealership on each subLot
+  for (const subLot of lot.subLots) {
+    const found = searchDealership(subLot, carName);
+    if (found) return found;
+  }
+  // if any of those calls returns something, return it
+  // if nothing found anywhere, return null
   return null
 }
 
-console.log(binarySearch((bubbleSort(cars)), 200));
+// call it like this
+console.log(searchDealership(dealershipGroup.lots[0], "Audi"));
+
+function infinite(n) {
+  return infinite(n + 1); // no base case — what happens?
+}
+
+try {
+  infinite(0);
+} catch (error) {
+  console.log(error.message); // what does JavaScript say?
+}
