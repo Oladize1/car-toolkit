@@ -34,7 +34,7 @@ const Trackable = (Base) =>
     }
   };
 
-class Car extends Trackable(Vehicle) {
+export class Car extends Trackable(Vehicle) {
   constructor(type, mileage) {
     super();
     this.type = type;
@@ -46,7 +46,7 @@ class Car extends Trackable(Vehicle) {
   }
 }
 
-class Truck extends Trackable(Vehicle) {
+export class Truck extends Trackable(Vehicle) {
   constructor(name, payloadCapacity) {
     super();
     this.name = name;
@@ -58,7 +58,7 @@ class Truck extends Trackable(Vehicle) {
   }
 }
 
-class Motorcycle extends Vehicle {
+export class Motorcycle extends Vehicle {
   constructor(engineCC) {
     super();
     this.engineCC = engineCC;
