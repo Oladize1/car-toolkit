@@ -1,4 +1,4 @@
-const cars = [
+export const cars = [
   {
     name: "BMW",
     model: 2002,
@@ -68,7 +68,7 @@ const cars = [
 // }
 
 // // 1. Summary of any single car
-function getCarSummary(car) {
+export function getCarSummary(car) {
   // return a formatted string
   if (typeof car !== "object" || car === null || Array.isArray(car)) {
     throw new Error(`type of ${car} is not an object`);
@@ -81,13 +81,13 @@ function getCarSummary(car) {
 }
 
 // // 2. Filter unsold cars
-function getUnsoldCars(cars) {
+export function getUnsoldCars(cars) {
   // return an array of only unsold cars
   return cars.filter((car) => car.sold === false);
 }
 
 // // 3. Find most expensive
-const getMostExpensive = (cars) => {
+export const getMostExpensive = (cars) => {
   // return the car object with the highest price
   if (cars.length === 0) {
     throw new Error("Empty array");
@@ -97,11 +97,11 @@ const getMostExpensive = (cars) => {
   });
 };
 
-function getTotalUnsoldCars(cars) {
+export function getTotalUnsoldCars(cars) {
   if (!Array.isArray(cars)) {
     throw new Error("Invalid argument type");
   }
-  return cars.reduce((total, car) => total + car.price, 0);
+  return cars.filter(car => car.sold !== true).reduce((total, car) => total + car.price, 0);
 }
 
 function getNewSummaries(cars) {
@@ -117,7 +117,7 @@ function getNewSummaries(cars) {
 // } catch (error) {
 //   console.log("Something went wrong: " + error.message);
 // }
-
+// console.log("total unsold cars",getTotalUnsoldCars(cars));
 // try {
 //   console.log(getCarSummary("i am not an object"));
 // } catch (error) {
